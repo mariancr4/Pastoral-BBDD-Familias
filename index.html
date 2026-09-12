@@ -179,7 +179,7 @@
       box-shadow: 0 4px 12px rgba(0, 154, 187, 0.3);
     }
 
-    /* SUBETAPAS PRIMARIA (Oculto al inicio) */
+    /* SUBETAPAS PRIMARIA */
     .substages-container {
       display: none;
       gap: 0.5rem;
@@ -633,7 +633,7 @@
   </header>
 
   <main>
-    <!-- SELECTOR DE ETAPAS (Infantil activo por defecto) -->
+    <!-- SELECTOR DE ETAPAS -->
     <div class="stages-nav">
       <div class="stages-main">
         <button class="stage-pill active" onclick="selectMainStage('Infantil', this)">👶 1. Infantil</button>
@@ -642,7 +642,7 @@
         <button class="stage-pill" onclick="selectMainStage('CCFF', this)">🎓 4. CCFF</button>
       </div>
 
-      <!-- SUBETAPAS PRIMARIA (Oculto al inicio) -->
+      <!-- SUBETAPAS PRIMARIA -->
       <div class="substages-container" id="primariaSubstages">
         <button class="substage-pill active" onclick="selectSubStage('1º-3º EPO', this)">1º - 2º - 3º EPO</button>
         <button class="substage-pill" onclick="selectSubStage('4º-6º EPO', this)">4º - 5º - 6º EPO</button>
@@ -716,12 +716,11 @@
     let currentDate = new Date(realToday.getFullYear(), realToday.getMonth(), 1);
     let selectedDateStr = todayStr;
 
-    // PARSEADOR INTELIGENTE DE FECHAS (Admite AAAA-MM-DD, DD/MM/AAAA, D/M/AAAA, etc.)
+    // PARSEADOR INTELIGENTE DE FECHAS (Admite AAAA-MM-DD, DD/MM/AAAA, etc.)
     function formatearFechaEstandar(str) {
       if (!str) return "";
       str = str.trim();
       
-      // Si viene con barras (DD/MM/AAAA)
       if (str.includes('/')) {
         const p = str.split('/');
         if (p.length === 3) {
@@ -732,15 +731,12 @@
         }
       }
       
-      // Si viene con guiones
       if (str.includes('-')) {
         const p = str.split('-');
         if (p.length === 3) {
-          // Si el año viene primero: AAAA-MM-DD
           if (p[0].length === 4) {
             return `${p[0]}-${p[1].padStart(2, '0')}-${p[2].padStart(2, '0')}`;
           }
-          // Si el día viene primero: DD-MM-AAAA
           if (p[2].length === 4) {
             return `${p[2]}-${p[1].padStart(2, '0')}-${p[0].padStart(2, '0')}`;
           }
@@ -768,7 +764,7 @@
       return r;
     }
 
-    // CARGA DE DATOS DESDE GOOGLE SHEETS CON ANTICACHÉ
+    // CARGA DE DATOS DESDE GOOGLE SHEETS
     async function cargarDatosDesdeSheets() {
       try {
         const urlConCacheBuster = SHEETS_CSV_URL + "&_cb=" + new Date().getTime();
@@ -777,7 +773,7 @@
         
         const lineas = csvText.split(/\r?\n/).filter(line => line.trim().length > 0);
         
-        // Saltamos la cabecera (fila 1)
+        // Saltamos la fila 1 de cabecera
         buenosDiasData = lineas.slice(1).map(linea => {
           const c = parseCSVLine(linea);
           return {
@@ -786,7 +782,8 @@
             titulo: (c[2] || "").trim(),
             descripcion: (c[3] || "").trim(),
             enlacePrincipal: (c[4] || "").trim(),
-            videoUrl: (c[5] || "").trim()
+            videoUrl: (c[5] || "").trim(),
+            videoTitulo: (c[6] || "").trim() // Columna G: título personalizado del vídeo
           };
         });
 
@@ -951,6 +948,9 @@
         return;
       }
 
+      // TÍTULO DINÁMICO DEL VÍDEO
+      const textoBotonVideo = item.videoTitulo ? item.videoTitulo : 'Vídeo o recurso audiovisual de apoyo';
+
       panel.innerHTML = `
         <div>
           <div class="detail-header-divider">
@@ -973,7 +973,7 @@
           ${item.videoUrl ? `
             <div class="extra-links">
               <a href="${item.videoUrl}" target="_blank" class="extra-link-item">
-                ▶️ Vídeo o recurso audiovisual de apoyo
+                ▶️ ${textoBotonVideo}
               </a>
             </div>
           ` : ''}
