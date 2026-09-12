@@ -179,7 +179,7 @@
       box-shadow: 0 4px 12px rgba(0, 154, 187, 0.3);
     }
 
-    /* SUBETAPAS PRIMARIA */
+    /* SUBETAPAS PRIMARIA (Oculto al inicio) */
     .substages-container {
       display: none;
       gap: 0.5rem;
@@ -542,7 +542,7 @@
           <path class="st0" d="M278.2,785.9c0,11.9,5.7,17.8,17.2,17.8s3.4,0,4.4-.2v-11.7c-.7.1-1.7.2-3,.2-2.9,0-4.2-2.2-4.2-6.5v-58.5h-14.5v59h0Z"/>
           <path class="st0" d="M259.1,766.7c0-11.5-9.3-14.7-13-14.7-16.4,0-25.9,10.1-25.9,28.6s7.6,23.8,19.1,23.8,11.9-3.1,15.2-9.3c.3,2.4.7,5.2,1.3,8.2h13.5c-.7-3.7-1.1-11.8-1.1-24.2v-13.5c-3.9,4.6-9.1,8-15.2,9.5-1.7,14-5.8,17-10,17s-8.4-4.1-8.4-12.5,4.8-17.7,12.8-17.7,11.9,1.6,11.9,4.6"/>
           <path class="st0" d="M335.9,773h-18.2c.8-6.9,4.2-10.2,10.2-10.2s8,4,8,10.2M349.6,782.3v-6c0-15.7-7.6-24.3-21.4-24.3s-23.9,8.3-23.9,24.8,2.6,15.8,7.8,20.6c5.2,4.8,11.9,7.1,20.2,7.1s11.5-1,16.1-2.7v-11.8c-5.7,1.6-11.1,2.4-16.2,2.4-7.8,0-12.5-3.4-14-10h31.4,0Z"/>
-          <path class="st0" d="M369.9,766.8c0-2.4,2.1-3.6,6.4-3.6s8.1.5,11.3,1.6v-11.1c-3.5-1.2-7.7-1.7-12.5-1.7-13.1,0-18.7,4.5-18.7,14.2s.8,7.9,2.6,10.1c1.8,2.2,5.1,4.3,9.8,6.4,6,2.8,7.6,4.3,7.6,6.4s-3.5,4.1-8,4.1-8.1-.7-12.8-2.2v11.2c3.9,1.4,8.9,2.1,15.1,2.1,12.9,0,19.3-5.2,19.3-15.5s-.8-8-3.3-10.4c-2.4-2.4-3.8-3.2-7.9-5.3-6.9-3.8-9.1-4.2-9.1-6.4"/>
+          <path class="st0" d="M369.9,766.8c0-2.4,2.1-3.6,6.4-3.6s8.1.5,11.3,1.6v-11.1c-3.5-1.2-7.7-1.7-12.5-1.7-13.1,0-18.7,4.5-18.7,14.2s.8,7.9,2.6,10.1c1.8,2.2,5.1,4.3,9.8,6.4,6,2.8,7.6,4.3,7.6,6.4s-3.5,4.1-8,4.1-8.1-.7-12.8-2.2v11.2c3.9,1.4,8.9,2.1,15.1,2.1,12.9,0,19.3-5.2,19.3-15.5s-.8-8-3.3-10.4c-2.4-2.4-3.8-3.2-7.9-5.3-6.8-3.8-9.1-4.2-9.1-6.4"/>
           <path class="st0" d="M397.6,785.9c0,11.9,5.7,17.8,17.2,17.8s3.4,0,4.4-.2v-11.7c-.7.1-1.7.2-3,.2-2.9,0-4.2-2.2-4.2-6.5v-33.1h-14.5v33.5h0Z"/>
           <path class="st0" d="M457.4,763.9c-.5,23.9-5.6,28.4-10.8,28.4s-8.4-4.1-8.4-12.5,4.8-16.5,12.8-16.5,4.1.2,6.4.5M473,803.4c-.7-3.7-1.1-11.8-1.1-24.2v-23.6c-2.5-1.2-5.9-2-10.2-2.6-4.2-.6-8.1-1-11.8-1-16.5,0-25.9,10.1-25.9,28.6s7.6,23.8,19.1,23.8,11.9-3.1,15.2-9.3c.3,2.4.7,5.2,1.3,8.2h13.5,0Z"/>
           <path class="st0" d="M577.1,763.9c-.5,23.9-5.6,28.4-10.8,28.4s-8.4-4.1-8.4-12.5,4.8-16.5,12.8-16.5,4.1.2,6.4.5M592.6,803.4c-.7-3.7-1.1-11.8-1.1-24.2v-23.6c-2.5-1.2-5.9-2-10.2-2.6-4.2-.6-8.1-1-11.8-1-16.5,0-25.9,10.1-25.9,28.6s7.6,23.8,19.1,23.8,11.9-3.1,15.2-9.3c.3,2.4.7,5.2,1.3,8.2h13.5,0Z"/>
@@ -716,6 +716,40 @@
     let currentDate = new Date(realToday.getFullYear(), realToday.getMonth(), 1);
     let selectedDateStr = todayStr;
 
+    // PARSEADOR INTELIGENTE DE FECHAS (Admite AAAA-MM-DD, DD/MM/AAAA, D/M/AAAA, etc.)
+    function formatearFechaEstandar(str) {
+      if (!str) return "";
+      str = str.trim();
+      
+      // Si viene con barras (DD/MM/AAAA)
+      if (str.includes('/')) {
+        const p = str.split('/');
+        if (p.length === 3) {
+          const dia = p[0].padStart(2, '0');
+          const mes = p[1].padStart(2, '0');
+          const anio = p[2].length === 2 ? '20' + p[2] : p[2];
+          return `${anio}-${mes}-${dia}`;
+        }
+      }
+      
+      // Si viene con guiones
+      if (str.includes('-')) {
+        const p = str.split('-');
+        if (p.length === 3) {
+          // Si el año viene primero: AAAA-MM-DD
+          if (p[0].length === 4) {
+            return `${p[0]}-${p[1].padStart(2, '0')}-${p[2].padStart(2, '0')}`;
+          }
+          // Si el día viene primero: DD-MM-AAAA
+          if (p[2].length === 4) {
+            return `${p[2]}-${p[1].padStart(2, '0')}-${p[0].padStart(2, '0')}`;
+          }
+        }
+      }
+      
+      return str;
+    }
+
     // LECTURA DE CSV RESPETANDO COMAS ENTRECOMILLADAS
     function parseCSVLine(text) {
       let p = '', c = false, r = [];
@@ -734,10 +768,11 @@
       return r;
     }
 
-    // CARGA DE DATOS DESDE GOOGLE SHEETS
+    // CARGA DE DATOS DESDE GOOGLE SHEETS CON ANTICACHÉ
     async function cargarDatosDesdeSheets() {
       try {
-        const res = await fetch(SHEETS_CSV_URL);
+        const urlConCacheBuster = SHEETS_CSV_URL + "&_cb=" + new Date().getTime();
+        const res = await fetch(urlConCacheBuster);
         const csvText = await res.text();
         
         const lineas = csvText.split(/\r?\n/).filter(line => line.trim().length > 0);
@@ -746,7 +781,7 @@
         buenosDiasData = lineas.slice(1).map(linea => {
           const c = parseCSVLine(linea);
           return {
-            fecha: (c[0] || "").trim(),
+            fecha: formatearFechaEstandar(c[0]),
             etapa: (c[1] || "").trim(),
             titulo: (c[2] || "").trim(),
             descripcion: (c[3] || "").trim(),
