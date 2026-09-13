@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Escuelas Salesianas María Auxiliadora (Nervión - Sevilla) | Pastoral | Buenos días</title>
+  <title>Buenos Días | Pastoral Salesianas Nervión</title>
 
   <!-- METADATOS PWA / ICONO DE APLICACIÓN -->
   <link rel="manifest" href="manifest.json">
@@ -707,8 +707,8 @@
   </footer>
 
   <script>
-    // URL PÚBLICA DE GOOGLE SHEETS
-    const SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSLmMNOFD1cHKXLC3Zwi2Yu6KqVJKlYZPh-B-l_TLLnJWpk9OzjHcrdrdFsi9qnIyu7V72O610nY3wx/pub?output=csv";
+    // URL PÚBLICA DE GOOGLE SHEETS (Pestaña BBDD específica gid=0)
+    const SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSLmMNOFD1cHKXLC3Zwi2Yu6KqVJKlYZPh-B-l_TLLnJWpk9OzjHcrdrdFsi9qnIyu7V72O610nY3wx/pub?gid=0&single=true&output=csv";
 
     // CITAS SALESIANAS PARA DÍAS FUTUROS
     const citasSalesianas = [
@@ -793,17 +793,17 @@
         
         const lineas = csvText.split(/\r?\n/).filter(line => line.trim().length > 0);
         
-        // Saltamos la cabecera (fila 1)
+        // Saltamos la fila 1 de cabecera en BBDD
         buenosDiasData = lineas.slice(1).map(linea => {
           const c = parseCSVLine(linea);
           return {
-            fecha: formatearFechaEstandar(c[0]),
-            etapa: (c[1] || "").trim(),
-            titulo: (c[2] || "").trim(),
-            descripcion: (c[3] || "").trim(),
-            enlacePrincipal: (c[4] || "").trim(),
-            videoUrl: (c[5] || "").trim(),
-            videoTitulo: (c[6] || "").trim() // Columna G: Título personalizado del vídeo
+            fecha: formatearFechaEstandar(c[0]),  // Columna A: Fecha
+            etapa: (c[1] || "").trim(),          // Columna B: Etapa
+            titulo: (c[2] || "").trim(),         // Columna C: Título
+            descripcion: (c[3] || "").trim(),    // Columna D: Descripción
+            enlacePrincipal: (c[4] || "").trim(),// Columna E: Enlace principal
+            videoUrl: (c[5] || "").trim(),       // Columna F: Enlace vídeo
+            videoTitulo: (c[6] || "").trim()     // Columna G: Título del vídeo
           };
         });
 
@@ -968,7 +968,6 @@
         return;
       }
 
-      // TÍTULO DINÁMICO DEL VÍDEO
       const textoBotonVideo = item.videoTitulo ? item.videoTitulo : 'Vídeo o recurso audiovisual de apoyo';
 
       panel.innerHTML = `
