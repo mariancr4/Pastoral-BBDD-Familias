@@ -4,26 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Buenos Días | Pastoral Salesianas Nervión</title>
-
-  <!-- METADATOS PWA / ICONO DE APLICACIÓN -->
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" type="image/png" href="icon.png">
-  <link rel="apple-touch-icon" href="icon.png">
-  <meta name="theme-color" content="#009abb">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Buenos Días">
-
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').catch(err => {
-          console.log('Service Worker no registrado:', err);
-        });
-      });
-    }
-  </script>
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -707,8 +687,8 @@
   </footer>
 
   <script>
-    // URL PÚBLICA DE GOOGLE SHEETS (Pestaña BBDD específica gid=0)
-    const SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSLmMNOFD1cHKXLC3Zwi2Yu6KqVJKlYZPh-B-l_TLLnJWpk9OzjHcrdrdFsi9qnIyu7V72O610nY3wx/pub?gid=0&single=true&output=csv";
+    // URL PÚBLICA DE GOOGLE SHEETS
+    const SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSLmMNOFD1cHKXLC3Zwi2Yu6KqVJKlYZPh-B-l_TLLnJWpk9OzjHcrdrdFsi9qnIyu7V72O610nY3wx/pub?output=csv";
 
     // CITAS SALESIANAS PARA DÍAS FUTUROS
     const citasSalesianas = [
@@ -793,17 +773,17 @@
         
         const lineas = csvText.split(/\r?\n/).filter(line => line.trim().length > 0);
         
-        // Saltamos la fila 1 de cabecera en BBDD
+        // Saltamos la fila 1 de cabecera
         buenosDiasData = lineas.slice(1).map(linea => {
           const c = parseCSVLine(linea);
           return {
-            fecha: formatearFechaEstandar(c[0]),  // Columna A: Fecha
-            etapa: (c[1] || "").trim(),          // Columna B: Etapa
-            titulo: (c[2] || "").trim(),         // Columna C: Título
-            descripcion: (c[3] || "").trim(),    // Columna D: Descripción
-            enlacePrincipal: (c[4] || "").trim(),// Columna E: Enlace principal
-            videoUrl: (c[5] || "").trim(),       // Columna F: Enlace vídeo
-            videoTitulo: (c[6] || "").trim()     // Columna G: Título del vídeo
+            fecha: formatearFechaEstandar(c[0]),
+            etapa: (c[1] || "").trim(),
+            titulo: (c[2] || "").trim(),
+            descripcion: (c[3] || "").trim(),
+            enlacePrincipal: (c[4] || "").trim(),
+            videoUrl: (c[5] || "").trim(),
+            videoTitulo: (c[6] || "").trim() // Columna G: título personalizado del vídeo
           };
         });
 
@@ -953,7 +933,7 @@
 
       const item = buenosDiasData.find(item => item.fecha === dateStr && item.etapa === currentActiveFilter);
 
-      if (!item || !item.titulo) {
+      if (!item || (!item.titulo && !item.enlacePrincipal && !item.videoUrl)) {
         panel.innerHTML = `
           <div class="detail-header-divider">
             <div class="detail-tags"><span class="detail-tag">${currentActiveFilter}</span></div>
@@ -968,6 +948,7 @@
         return;
       }
 
+      // TÍTULO DINÁMICO DEL VÍDEO
       const textoBotonVideo = item.videoTitulo ? item.videoTitulo : 'Vídeo o recurso audiovisual de apoyo';
 
       panel.innerHTML = `
@@ -978,8 +959,8 @@
             </div>
             <div class="detail-date">${formattedDate}</div>
           </div>
-          <h3 class="detail-title">${item.titulo}</h3>
-          <p class="detail-desc">${item.descripcion}</p>
+          ${item.titulo ? `<h3 class="detail-title">${item.titulo}</h3>` : ''}
+          ${item.descripcion ? `<p class="detail-desc">${item.descripcion}</p>` : ''}
         </div>
 
         <div>
